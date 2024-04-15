@@ -47,7 +47,6 @@ interface Props {
     width: number;
     height: number;
     paddingTop?: number;
-    paddingLeft?: number;
     originData: SankeyData;
     nodeWidth?: number;
     nodeHeight?: number;
@@ -61,7 +60,7 @@ interface Props {
 }
 
 export interface SourceTargetIdLinksDict {
-    [sourceTargetId: string]: SankeyLinkExtended[];
+    [sourceTargetId: string]: SankeyLink[];
 }
 // Component
 export const Sankey = ({
@@ -69,7 +68,6 @@ export const Sankey = ({
     height,
     originData,
     paddingTop = 0,
-    paddingLeft = 0,
     nodeWidth = 20,
     nodeHeight = 20,
     nodeMargin = 5,
@@ -95,11 +93,9 @@ export const Sankey = ({
                     if (sourceTargetId in sourceTargetIdLinksDict) {
                         const alreadySameLink = sourceTargetIdLinksDict[sourceTargetId].find((alreadyLink) => alreadyLink === link2);
                         if (!alreadySameLink) {
-                            //@ts-ignore
                             sourceTargetIdLinksDict[sourceTargetId].push(link2);
                         }
                     } else {
-                        //@ts-ignore
                         sourceTargetIdLinksDict[sourceTargetId] = [link2];
                     }
                 }
@@ -119,13 +115,11 @@ export const Sankey = ({
             mergedLinks.push(mergedLink);
         }
 
-        originData.nodes.forEach((node) => {});
-
         const renderingData: SankeyData = { ...originData };
 
         setSourceTargetIdLinksDict(sourceTargetIdLinksDict);
 
-        const nodes = calcSankeyNodes(renderingData, width, height, paddingTop, paddingLeft, nodeWidth, nodeHeight, nodeMargin, maxLinkBreadth);
+        const nodes = calcSankeyNodes(renderingData, width, height, paddingTop, nodeWidth, nodeHeight, nodeMargin, maxLinkBreadth);
 
         setNodes(nodes);
 
@@ -175,14 +169,13 @@ export const Sankey = ({
             <LinkRepVisVarColor />
             <LinkRepVisTechColor />
             {columnss.map((column, i) => (
-                <BigBox>
-                    <text key={`column-${i}`} style={{ fontSize: '16px', fontWeight: '650' }} className="coltext" x={450 * i - 428.5} y={(height as number) * 0.02} textAnchor="middle">
+                <BigBox key={`column-${i}`}>
+                    <text style={{ fontSize: '16px', fontWeight: '650' }} className="coltext" x={450 * i - 428.5} y={(height as number) * 0.02} textAnchor="middle">
                         {`${column}`}
                     </text>
                 </BigBox>
             ))}
             {nodes.map((node, i) => (
-                //@ts-ignore
                 <Node
                     //@ts-ignore
                     className="node"

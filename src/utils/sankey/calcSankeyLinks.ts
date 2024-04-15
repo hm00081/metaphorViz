@@ -3,10 +3,6 @@ import { linkHorizontal, line, curveCardinal } from 'd3-shape';
 // Types
 import { SankeyData, SankeyLinkExtended, SankeyNodeExtended } from '../../types';
 
-export interface SourceTargetNodesDict {
-    [sourceTargetId: string]: SankeyLinkExtended[];
-}
-
 export const calcSankeyLinks = (
     data: SankeyData,
     height: number,
@@ -60,7 +56,7 @@ export const calcSankeyLinks = (
                 number,
                 number
             ][];
-
+            //https://snyk.io/advisor/npm-package/d3-shape/functions/d3-shape.curveCardinal
             const path = line().curve(curveCardinal.tension(0.2))(data);
 
             if (!path) return;
@@ -87,7 +83,6 @@ export const calcSankeyLinks = (
     extendedLinks.forEach((link) => {
         if (link.targetNode.name! in targetNodeNameLinksDict) {
             targetNodeNameLinksDict[link.targetNode.name!].push(link);
-            // sourceNodeNameLinksDict[link.targetNode.name!].push(link);
         } else {
             targetNodeNameLinksDict[link.targetNode.name!] = [link];
         }
@@ -156,7 +151,6 @@ export const calcSankeyLinks = (
         const targetCenter = (d: typeof extendedLinks[0]) => [d.targetNode.x, d.targetNode.y + d.targetNodeYPosition + d.value / 2];
         // d3-linkHorizontal
         let path = linkHorizontal<typeof extendedLinks[0], {}>().source(sourceCenter).target(targetCenter)(link);
-        // if(link.source.length === n);
         if (!path) return null;
 
         link.path = path;

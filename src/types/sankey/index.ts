@@ -121,7 +121,6 @@ export type SankeyLinkExtended = SankeyLink & {
 export type SankeyStatus = {
     paperName?: string;
     imgUrl: string;
-    // status: string | number | number[];
 };
 
 export type WordType = {

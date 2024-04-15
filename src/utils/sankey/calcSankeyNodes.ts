@@ -5,7 +5,6 @@ export const calcSankeyNodes = (
     width: number,
     height: number,
     paddingTop: number,
-    paddingLeft: number,
     nodeWidth: number,
     nodeHeight: number,
     nodeMargin: number,
@@ -32,7 +31,6 @@ export const calcSankeyNodes = (
         output: 0,
         value: 0,
         links,
-        link,
         x: 0,
         y: 0,
         width: propNodeWidth,
@@ -41,18 +39,11 @@ export const calcSankeyNodes = (
         targetNodeType: 0,
         nodeOrderIndex: 0,
     }));
-
+    //console.log('extendedNodes', extendedNodes);
     // Calc value for each node
     links.forEach((link) => {
-        //@ts-ignore
         extendedNodes[link.source].output += link.value;
-        //@ts-ignore
-        extendedNodes[link.target].input += link.value;
-    });
-    link?.forEach((link) => {
-        //@ts-ignore
-        extendedNodes[link.source].output += link.value;
-        //@ts-ignore
+
         extendedNodes[link.target].input += link.value;
     });
 
@@ -77,11 +68,9 @@ export const calcSankeyNodes = (
 
     // Calc column width
     const columnWidth = width / (columns.length - 1);
-    // console.log(columnWidth);
     // Calc nodes positions
     columns.forEach((column, i) => {
         // 각 columnNodes의 객체 데이터로 필터링해줌
-        // extendedNodes의 value별로 다시 filtering을 해주어야 하는 함수를 생성.
         const columnNodes = extendedNodes.filter((node) => node.type === column);
         let columnXPos = 0;
 
@@ -95,52 +84,35 @@ export const calcSankeyNodes = (
         const startP = height / 2 - (entityHeight * columnNodes.length) / 2 + propPaddingTop;
 
         let currYPos = startP;
-        // let currXPos = startP;
-
         //node margin
         const nextPosition = propMaxLinkBreadth && propMaxLinkBreadth > propNodeHeight ? propMaxLinkBreadth + propNodeMargin + 3 : propNodeHeight + propNodeMargin + 3;
         const y0Pos = propMaxLinkBreadth ? (propMaxLinkBreadth - propNodeWidth) / 2 + propPaddingTop : propPaddingTop;
 
-        // Add node x pos and calc node y pos
+        const nodePositionAdjustments = {
+            Target: { x: columnXPos + 450, yAdjustments: { '0': -25, '1': -10, '2': 5, '3': 20, '4': 35 } },
+            Intermediation: { x: 900, yAdjustments: { '0': -200, '1': -170, '2': -140, '3': -110, '4': -80 } },
+            Representation: { x: 1350, yAdjustments: { '0': -70, '1': -50, '2': -30, '3': -10 } },
+            'Vis var&tech': { x: 1800, yAdjustments: { '0': -180, '1': 50 } },
+            Paper: { x: 0, yAdjustments: { default: y0Pos * 8.5 } },
+        };
+
+        function adjustNodePosition(node: SankeyNodeExtended, currYPos: number, columnXPos: number) {
+            //@ts-ignore
+            const typeAdjustments = nodePositionAdjustments[node.type];
+            if (typeAdjustments) {
+                node.x = typeAdjustments.x;
+                const yAdjustment = typeAdjustments.yAdjustments[node.subtype] || typeAdjustments.yAdjustments['default'];
+                if (yAdjustment !== undefined) {
+                    node.y = currYPos + yAdjustment;
+                } else {
+                    node.y = currYPos;
+                }
+            }
+        }
+        // Usage in your existing loop
         columnNodes.forEach((node) => {
-            // Get Extended Node
             const extendedNode = extendedNodes[node.index];
-
-            // if (propNodeHeight === 0) {
-            //     propNodeHeight = 1;
-
-            // }
-            // Assign values
-            extendedNode.x = columnXPos;
-            extendedNode.y = currYPos;
-
-            // Temp for nicer view
-
-            if (node.type === 'Target' && node.subtype === '0') extendedNode.y = currYPos - 25;
-            if (node.type === 'Target' && node.subtype === '1') extendedNode.y = currYPos - 10;
-            if (node.type === 'Target' && node.subtype === '2') extendedNode.y = currYPos + 5;
-            if (node.type === 'Target' && node.subtype === '3') extendedNode.y = currYPos + 20;
-            if (node.type === 'Target' && node.subtype === '4') extendedNode.y = currYPos + 35;
-            if (node.type === 'Target') extendedNode.x = columnXPos + 450;
-            if (node.type === 'Intermediation' && node.subtype === '0') extendedNode.y = currYPos - 200;
-            if (node.type === 'Intermediation' && node.subtype === '1') extendedNode.y = currYPos - 170;
-            if (node.type === 'Intermediation' && node.subtype === '2') extendedNode.y = currYPos - 140;
-            if (node.type === 'Intermediation' && node.subtype === '3') extendedNode.y = currYPos - 110;
-            if (node.type === 'Intermediation' && node.subtype === '4') extendedNode.y = currYPos - 80;
-            if (node.type === 'Intermediation') extendedNode.x = 900;
-            if (node.type === 'Representation' && node.subtype === '0') extendedNode.y = currYPos - 70;
-            if (node.type === 'Representation' && node.subtype === '1') extendedNode.y = currYPos - 50;
-            if (node.type === 'Representation' && node.subtype === '2') extendedNode.y = currYPos - 30;
-            if (node.type === 'Representation' && node.subtype === '3') extendedNode.y = currYPos - 10;
-            if (node.type === 'Representation') extendedNode.x = 1350;
-            if (node.type === 'Vis var&tech' && node.subtype === '0') extendedNode.y = currYPos - 180;
-            if (node.type === 'Vis var&tech' && node.subtype === '1') extendedNode.y = currYPos + 50;
-            if (node.type === 'Vis var&tech') extendedNode.x = 1800;
-            if (node.type === 'Paper') extendedNode.y = currYPos + y0Pos * 8.5; // 시작 구간
-            if (node.type === 'Paper') extendedNode.x = 0;
-
-            // Filter Nodes with no output that or not end nodes
-
+            adjustNodePosition(extendedNode, currYPos, columnXPos);
             const nextPos = node.value + propNodeMargin;
             currYPos += nextPos;
         });
@@ -157,12 +129,6 @@ export const calcSankeyNodes = (
         // sort [key, value] entires.
         for (const [nodeName, nodeValue] of Object.entries(nodeValueDict)) {
             nodeValue.sort((a, b) => b.value - a.value);
-            // console.log(nodeValue);
-            nodeValue.forEach((node, orderIndex) => {
-                //node value 크기의 순서대로 재배열 진행.
-                // node.value = node.nodeOrderIndex;
-                // node.nodeOrderIndex = orderIndex;
-            });
         }
 
         // Fix collisions for node with y = 0
@@ -180,17 +146,8 @@ export const calcSankeyNodes = (
                 yPos += nextPosition;
             });
         });
-
         // Error Checking
-        // if (entityHeight * columnNodes.length > height) throw new Error('With the given proportional sizes, the height of the largest column exceeds the size of the sankey diagram');
     });
-
-    /* Sort nodes
-  const sortSchema = ["primary", "secondary", "utility", "end"];
-
-  extendedNodes.sort((a, b) => {
-    return sortSchema.indexOf(a.type) - sortSchema.indexOf(b.type);
-  }); */
 
     // Return calculated nodes
     return extendedNodes;

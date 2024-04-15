@@ -8,7 +8,6 @@ import React, { StrictMode, useState } from 'react';
 import { SankeyData, SankeyLink, SankeyLinkExtended } from './types';
 import { PopUp } from './components/PopUp/PopUp';
 
-// viewProt 수정 필요
 export default function App() {
     const [originData, setOriginData] = useState<SankeyData>(fullData);
     const [clickedLink, setClickedLink] = useState<SankeyLinkExtended>();
@@ -23,29 +22,31 @@ export default function App() {
     };
 
     return (
-        <div className={style.root}>
-            {isPopUp && PopUp(onclick)}
-            {Header(onclick)}
-            <div className={style.mainContainer}>
-                <SideNavi
-                    clickedNodeLinks={clickedNodeLinks}
-                    clickedLink={clickedLink}
-                    clickedButton={clickedButton}
-                    clickedCluster={clickedCluster}
-                    setClickedCluster={setClickedCluster}
-                    // @ts-ignore
-                    originData={originData}
-                    setOriginData={setOriginData}
-                />
-                <FinalSankey
-                    originData={originData}
-                    setOriginData={setOriginData}
-                    setClickedNodeLinks={setClickedNodeLinks}
-                    setClickedLink={setClickedLink}
-                    setClickedButton={setClickedButton}
-                    clickedCluster={clickedCluster}
-                />
+        <StrictMode>
+            <div className={style.root}>
+                {isPopUp && PopUp(onclick)}
+                {Header(onclick)}
+                <div className={style.mainContainer}>
+                    <SideNavi
+                        clickedNodeLinks={clickedNodeLinks}
+                        clickedLink={clickedLink}
+                        clickedButton={clickedButton}
+                        clickedCluster={clickedCluster}
+                        setClickedCluster={setClickedCluster}
+                        // @ts-ignore
+                        originData={originData}
+                        setOriginData={setOriginData}
+                    />
+                    <FinalSankey
+                        originData={originData}
+                        setOriginData={setOriginData}
+                        setClickedNodeLinks={setClickedNodeLinks}
+                        setClickedLink={setClickedLink}
+                        setClickedButton={setClickedButton}
+                        clickedCluster={clickedCluster}
+                    />
+                </div>
             </div>
-        </div>
+        </StrictMode>
     );
 }

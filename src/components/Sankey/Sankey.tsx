@@ -40,6 +40,7 @@ import { Node } from './Node';
 import './Sankey.scss';
 import { calcSankeyNodes, calcSankeyLinks } from '../../utils/';
 import styled from 'styled-components';
+
 const BigBox = styled.g``;
 
 // Props

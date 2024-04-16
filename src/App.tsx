@@ -1,10 +1,10 @@
-import FinalSankey from './FinalSankey';
+import FinalSankey from './views/FinalSankey';
 import Header from './components/Header/Header';
 import './styles.scss';
 import style from './rootStyle.module.scss';
 import { SideNavi } from './components/SideNavi/SideNavi';
 import { fullData } from './Data';
-import React, { StrictMode, useState } from 'react';
+import { StrictMode, useState } from 'react';
 import { SankeyData, SankeyLink, SankeyLinkExtended } from './types';
 import { PopUp } from './components/PopUp/PopUp';
 

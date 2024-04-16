@@ -1,11 +1,11 @@
 // Libraries
 import { useMeasure } from 'react-use';
-import { Sankey } from './components/Sankey';
-import './styles.scss';
+import { Sankey } from '../components/Sankey';
+import '../styles.scss';
 import Button from '@mui/material/Button';
 import { useState, useEffect, useRef } from 'react';
-import { basicData, targetaa, targetab, targetba, targetbb, targetca, targetcb, repa, repb, repc, repd, repea, repeb, repf, repg, reph, fullData } from './Data';
-import { SankeyData, SankeyLink, SankeyLinkExtended } from './types';
+import { basicData, targetaa, targetab, targetba, targetbb, targetca, targetcb, repa, repb, repc, repd, repea, repeb, repf, repg, reph, fullData } from '../Data';
+import { SankeyData, SankeyLink, SankeyLinkExtended } from '../types';
 import { ButtonGroup } from '@mui/material';
 import style from './button.module.scss';
 
